@@ -1,0 +1,11 @@
+{
+  "name": "create-zen",
+  "version": "1.0.1",
+  "description": "✨ Create a new project from dmitry-conquer/zen-starter template 🚀",
+  "bin": {
+    "create-zen": "./index.js"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1"
+  }
+}
