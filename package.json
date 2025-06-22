@@ -1,7 +1,7 @@
 {
   "name": "create-zen",
-  "version": "1.0.1",
-  "description": "✨ Create a new project from dmitry-conquer/zen-starter template 🚀",
+  "version": "1.0.2",
+  "description": "✨ Create a new project from dmitry-conquer/zen-starter template with bun 🚀",
   "bin": {
     "create-zen": "./index.js"
   },
