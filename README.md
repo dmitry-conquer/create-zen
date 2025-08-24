@@ -44,23 +44,18 @@ A premium Vite starter kit for rapid web development, designed to streamline you
 
 You can create a new project using `npm create`:
 ```bash
-npm create zen@latest project-name
+npm create zen@latest
 ```
 
-Alternatively, you can clone the repository manually:
+**Why `@latest`?** This ensures you always get the most recent version of the ZEN starter kit. Without it, npm might use a cached or outdated version.
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/dmitry-conquer/zen-starter.git
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd zen-starter
-    ```
-3.  Install the dependencies:
-    ```bash
-    npm install
-    ```
+The tool will interactively prompt you to:
+1. **Enter your project name** (with a default fallback)
+2. **Choose between two versions**:
+   - **Standard Version**: Full-featured with all components
+   - **Lite Version**: Lightweight for static sites
+
+This makes it easy to get started without remembering command line arguments and gives you flexibility to choose the right version for your needs.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="line" />
 

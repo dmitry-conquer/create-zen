@@ -1,44 +1,142 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import prompts from 'prompts';
+import chalk from 'chalk';
+import ora from 'ora';
 
-const PROJECT_NAME = process.argv[2] || 'zen-starter-app';
+// Color palette inspired by the ZEN website
+const colors = {
+  green: '#00D4AA',      // Less acidic, more blue-green
+  lightGreen: '#00B894', // Darker blue-green
+  purple: '#8B5CF6',     // Purple accent
+  darkPurple: '#7C3AED', // Darker purple
+  lightPurple: '#A78BFA', // Light purple
+  white: '#FFFFFF',      // Pure white
+  lightGrey: '#9CA3AF',  // Light grey
+  darkGrey: '#374151',   // Dark grey
+  bgDark: '#1F2937'      // Background dark
+};
 
-const green = (msg) => `\x1b[32m${msg}\x1b[0m`;
-const yellow = (msg) => `\x1b[33m${msg}\x1b[0m`;
-const red = (msg) => `\x1b[31m${msg}\x1b[0m`;
-const cyan = (msg) => `\x1b[36m${msg}\x1b[0m`;
+// Enhanced text styling with chalk
+const zen = (text) => chalk.hex(colors.green).bold(text);
+const accent = (text) => chalk.hex(colors.purple).bold(text);
+const title = (text) => chalk.hex(colors.white).bold(text);
+const subtitle = (text) => chalk.hex(colors.lightGrey)(text);
+const highlight = (text) => chalk.hex(colors.lightGreen)(text);
+const error = (text) => chalk.red.bold(text);
+const success = (text) => chalk.green.bold(text);
+const info = (text) => chalk.blue(text);
 
-console.log();
-console.log('✨', cyan('Welcome to'), green('ZEN!'), '✨');
-console.log();
+// Display minimalistic header
+const displayHeader = () => {
+  console.clear();
+  console.log();
+  console.log(`  ${zen('ZEN')} - ${title('The Professional Web Development Starter')}`);
+  console.log();
+};
 
-if (fs.existsSync(PROJECT_NAME)) {
-  console.error(red('⛔ Directory "' + PROJECT_NAME + '" already exists!'));
-  process.exit(1);
-}
+// Get project name with enhanced styling
+const getProjectName = async () => {
+  const { projectName } = await prompts({
+    type: 'text',
+    name: 'projectName',
+    message: 'Project name:',
+    initial: 'zen-starter-app',
+    validate: (value) => {
+      if (!value.trim()) return 'Project name is required';
+      if (fs.existsSync(value.trim())) return 'Directory already exists';
+      return true;
+    }
+  });
+  
+  return projectName;
+};
 
-console.log('🚀', yellow(`Cloning ZEN template into "${PROJECT_NAME}"...`));
-try {
-  execSync(`git clone --depth=1 https://github.com/dmitry-conquer/zen-starter.git "${PROJECT_NAME}"`, { stdio: 'inherit' });
-} catch (err) {
-  console.error(red('❌ Clone failed. Check your internet connection or permissions.'));
-  process.exit(1);
-}
+// Get project version with beautiful selection
+const getProjectVersion = async () => {
+  console.log();
+  
+  const { version } = await prompts({
+    type: 'select',
+    name: 'version',
+    message: 'Select ZEN starter version:',
+    choices: [
+      {
+        title: `${chalk.hex(colors.white)('Standard Version')} ${chalk.hex(colors.lightGrey)('(Full-featured with all components)')}`,
+        value: 'standard'
+      },
+      {
+        title: `${chalk.hex(colors.purple)('Lite Version')} ${chalk.hex(colors.lightGrey)('(Essential features only)')}`,
+        value: 'lite'
+      }
+    ],
+    initial: 0,
+    hint: false
+  });
+  
+  console.log();
+  return version === 'lite';
+};
 
-// Remove .git so the created project is not a git repo
-fs.rmSync(path.join(PROJECT_NAME, '.git'), { recursive: true, force: true });
+// Get repository URL based on choice
+const getRepositoryUrl = (isLite) => {
+  if (isLite) {
+    return 'https://github.com/dmitry-conquer/zen-starter-lite.git';
+  }
+  return 'https://github.com/dmitry-conquer/zen-starter.git';
+};
 
-console.log();
-console.log(green('✅ All done! Your project is ready.'));
-console.log();
-console.log('👉', cyan('Next steps:'));
-console.log();
-console.log(`   📁 ${yellow('cd ' + PROJECT_NAME)}`);
-console.log('   📦', yellow('npm install'));
-console.log('   🧑‍💻', yellow('npm run dev'));
-console.log();
-console.log('🌿 Happy coding!');
-console.log();
+// Main function with enhanced UX
+const main = async () => {
+  try {
+    displayHeader();
+    
+    const PROJECT_NAME = await getProjectName();
+    const isLite = await getProjectVersion();
+    const REPO_URL = getRepositoryUrl(isLite);
+    
+    // Cloning with spinner
+    const spinner = ora({
+      text: `${chalk.hex(colors.green)('◇')} ${title('Cloning repository...')}`,
+      color: 'green'
+    }).start();
+    
+    try {
+      execSync(`git clone --depth=1 "${REPO_URL}" "${PROJECT_NAME}"`, { stdio: 'pipe' });
+      spinner.stop();
+    } catch (err) {
+      spinner.fail(`${error('Clone failed!')}`);
+      console.log(`  ${subtitle('Please check your internet connection or permissions.')}`);
+      process.exit(1);
+    }
+    
+    // Remove .git
+    fs.rmSync(path.join(PROJECT_NAME, '.git'), { recursive: true, force: true });
+    
+    // Success message
+    console.log();
+    console.log(`  ${chalk.hex(colors.darkPurple)('✅ SUCCESS! Your project is ready to go!')} ${chalk.hex(colors.lightPurple)('🎉')}`);
+    console.log();
+    
+    // Next steps
+    console.log(`  ${chalk.hex(colors.green)('◇')} ${title('Next steps:')}`);
+    console.log(`    ${chalk.hex(colors.purple)('📁')} ${highlight(`cd ${PROJECT_NAME}`)}`);
+    console.log(`    ${chalk.hex(colors.purple)('📦')} ${highlight('npm install')}`);
+    console.log(`    ${chalk.hex(colors.purple)('🧑‍💻')} ${highlight('npm run dev')}`);
+    console.log();
+    
+    // Final message
+    console.log(`  ${zen('Happy coding with ZEN!')} ${chalk.hex(colors.lightPurple)('✨')}`);
+    console.log();
+    
+  } catch (err) {
+    console.log(`  ${error('❌ An error occurred:')} ${err.message}`);
+    process.exit(1);
+  }
+};
+
+// Run the main function
+main();
