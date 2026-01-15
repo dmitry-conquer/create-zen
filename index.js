@@ -55,39 +55,8 @@ const getProjectName = async () => {
   return projectName;
 };
 
-// Get project version with beautiful selection
-const getProjectVersion = async () => {
-  console.log();
-  
-  const { version } = await prompts({
-    type: 'select',
-    name: 'version',
-    message: 'Select ZEN starter version:',
-    choices: [
-      {
-        title: `${chalk.hex(colors.white)('Standard Version')} ${chalk.hex(colors.lightGrey)('(Full-featured with all components)')}`,
-        value: 'standard'
-      },
-      {
-        title: `${chalk.hex(colors.purple)('Lite Version')} ${chalk.hex(colors.lightGrey)('(Essential features only)')}`,
-        value: 'lite'
-      }
-    ],
-    initial: 0,
-    hint: false
-  });
-  
-  console.log();
-  return version === 'lite';
-};
-
-// Get repository URL based on choice
-const getRepositoryUrl = (isLite) => {
-  if (isLite) {
-    return 'https://github.com/dmitry-conquer/zen-starter-lite.git';
-  }
-  return 'https://github.com/dmitry-conquer/zen-starter.git';
-};
+// Get repository URL
+const getRepositoryUrl = () => 'https://github.com/dmitry-conquer/zen-starter.git';
 
 // Main function with enhanced UX
 const main = async () => {
@@ -95,12 +64,11 @@ const main = async () => {
     displayHeader();
     
     const PROJECT_NAME = await getProjectName();
-    const isLite = await getProjectVersion();
-    const REPO_URL = getRepositoryUrl(isLite);
+    const REPO_URL = getRepositoryUrl();
     
     // Cloning with spinner
     const spinner = ora({
-      text: `${chalk.hex(colors.green)('◇')} ${title('Cloning repository...')}`,
+      text: `${chalk.hex(colors.green)('◇')} ${title('Preparing your ZEN project...')}`,
       color: 'green'
     }).start();
     
@@ -108,8 +76,8 @@ const main = async () => {
       execSync(`git clone --depth=1 "${REPO_URL}" "${PROJECT_NAME}"`, { stdio: 'pipe' });
       spinner.stop();
     } catch (err) {
-      spinner.fail(`${error('Clone failed!')}`);
-      console.log(`  ${subtitle('Please check your internet connection or permissions.')}`);
+      spinner.fail(`${error('Setup failed!')}`);
+      console.log(`  ${subtitle('Please check your internet connection, permissions, and try again.')}`);
       process.exit(1);
     }
     
@@ -122,7 +90,7 @@ const main = async () => {
     console.log();
     
     // Next steps
-    console.log(`  ${chalk.hex(colors.green)('◇')} ${title('Next steps:')}`);
+    console.log(`  ${chalk.hex(colors.green)('◇')} ${title('Next steps')}`);
     console.log(`    ${chalk.hex(colors.purple)('📁')} ${highlight(`cd ${PROJECT_NAME}`)}`);
     console.log(`    ${chalk.hex(colors.purple)('📦')} ${highlight('npm install')}`);
     console.log(`    ${chalk.hex(colors.purple)('🧑‍💻')} ${highlight('npm run dev')}`);
