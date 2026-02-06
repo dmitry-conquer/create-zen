@@ -55,8 +55,37 @@ const getProjectName = async () => {
   return projectName;
 };
 
+// Choose starter variant
+const getStarterVariant = async () => {
+  console.log();
+  const { variant } = await prompts({
+    type: 'select',
+    name: 'variant',
+    message: 'Select ZEN starter variant:',
+    choices: [
+      {
+        title: `${chalk.hex(colors.white)('Standard')} ${chalk.hex(colors.lightGrey)('(BEM + SCSS + TypeScript)')}`,
+        value: 'standard'
+      },
+      {
+        title: `${chalk.hex(colors.purple)('Express')} ${chalk.hex(colors.lightGrey)('(Tailwind CSS + Alpine.js)')}`,
+        value: 'express'
+      }
+    ],
+    initial: 0,
+    hint: false
+  });
+  console.log();
+  return variant;
+};
+
 // Get repository URL
-const getRepositoryUrl = () => 'https://github.com/dmitry-conquer/zen-starter.git';
+const getRepositoryUrl = (variant) => {
+  if (variant === 'express') {
+    return 'https://github.com/dmitry-conquer/zen-express.git';
+  }
+  return 'https://github.com/dmitry-conquer/zen-starter.git';
+};
 
 // Main function with enhanced UX
 const main = async () => {
@@ -64,7 +93,8 @@ const main = async () => {
     displayHeader();
     
     const PROJECT_NAME = await getProjectName();
-    const REPO_URL = getRepositoryUrl();
+    const variant = await getStarterVariant();
+    const REPO_URL = getRepositoryUrl(variant);
     
     // Cloning with spinner
     const spinner = ora({
