@@ -7,30 +7,30 @@ import prompts from 'prompts';
 import chalk from 'chalk';
 import ora from 'ora';
 
-// Gruvbox palette
+// Modern terminal palette
 const c = {
-  yellow:  (t) => chalk.hex('#fabd2f').bold(t),
-  orange:  (t) => chalk.hex('#fe8019').bold(t),
-  red:     (t) => chalk.hex('#fb4934').bold(t),
-  green:   (t) => chalk.hex('#b8bb26').bold(t),
-  aqua:    (t) => chalk.hex('#8ec07c').bold(t),
-  blue:    (t) => chalk.hex('#83a598').bold(t),
-  purple:  (t) => chalk.hex('#d3869b').bold(t),
-  fg:      (t) => chalk.hex('#ebdbb2')(t),
-  muted:   (t) => chalk.hex('#928374')(t),
-  dim:     (t) => chalk.hex('#504945')(t),
+  brand:   (t) => chalk.hex('#38bdf8').bold(t),
+  accent:  (t) => chalk.hex('#a78bfa').bold(t),
+  success: (t) => chalk.hex('#34d399').bold(t),
+  warning: (t) => chalk.hex('#fbbf24').bold(t),
+  danger:  (t) => chalk.hex('#fb7185').bold(t),
+  info:    (t) => chalk.hex('#22d3ee').bold(t),
+  fg:      (t) => chalk.hex('#f8fafc')(t),
+  soft:    (t) => chalk.hex('#cbd5e1')(t),
+  muted:   (t) => chalk.hex('#94a3b8')(t),
+  dim:     (t) => chalk.hex('#475569')(t),
 };
 
-const line = () => c.dim('  ' + '─'.repeat(42));
+const line = () => c.dim('  ' + '─'.repeat(48));
 
 const displayHeader = () => {
   console.clear();
   console.log();
   console.log(
     `  ` +
-    c.yellow('z') + c.orange('e') + c.green('n') +
+    c.brand('create') + c.fg('-') + c.accent('zen') +
     `  ` + c.muted('·') + `  ` +
-    c.fg('create new project')
+    c.soft('modern starter generator')
   );
   console.log(line());
   console.log();
@@ -40,7 +40,7 @@ const getProjectName = async () => {
   const { projectName } = await prompts({
     type: 'text',
     name: 'projectName',
-    message: c.fg('project name'),
+    message: c.soft('Project name'),
     initial: 'my-project',
     validate: (value) => {
       if (!value.trim()) return 'name is required';
@@ -58,16 +58,16 @@ const getStarterVariant = async () => {
   const { variant } = await prompts({
     type: 'select',
     name: 'variant',
-    message: c.fg('starter'),
+    message: c.soft('Choose a starter'),
     choices: [
       {
-        title: `${c.aqua('express')}   ${c.muted('tailwind + alpine')}`,
-        description: 'lightweight utility-first setup',
+        title: `${c.info('Express')}    ${c.muted('Tailwind + Alpine')}`,
+        description: 'fast server-rendered setup for small and focused projects',
         value: 'express'
       },
       {
-        title: `${c.muted('standard')}  ${c.muted('bem + scss + typescript')}`,
-        description: 'classic setup',
+        title: `${c.accent('Standard')}   ${c.muted('BEM + SCSS + TypeScript')}`,
+        description: 'structured frontend starter with classic component styling',
         value: 'standard'
       }
     ],
@@ -99,7 +99,7 @@ const getNextSteps = (variant, name) => {
   return steps;
 };
 
-const rainbow = [c.red, c.orange, c.yellow, c.green, c.aqua, c.blue, c.purple];
+const stepColors = [c.info, c.accent, c.success, c.warning];
 
 const main = async () => {
   try {
@@ -110,9 +110,9 @@ const main = async () => {
     const REPO_URL = getRepositoryUrl(variant);
 
     const spinner = ora({
-      text: `  ${c.muted('cloning...')}`,
+      text: `  ${c.muted('Creating project...')}`,
       spinner: 'dots',
-      color: 'yellow'
+      color: 'cyan'
     }).start();
 
     try {
@@ -121,24 +121,24 @@ const main = async () => {
     } catch (err) {
       spinner.stop();
       console.log();
-      console.log(`  ${c.red('✗')}  ${c.fg('clone failed')}  ${c.muted('check your connection')}`);
+      console.log(`  ${c.danger('✗')}  ${c.fg('Clone failed')}  ${c.muted('check your connection')}`);
       console.log();
       process.exit(1);
     }
 
     fs.rmSync(path.join(PROJECT_NAME, '.git'), { recursive: true, force: true });
 
-    console.log(`  ${c.green('✓')}  ${c.fg('ready')}  ${c.aqua(PROJECT_NAME)}`);
+    console.log(`  ${c.success('✓')}  ${c.fg('Project ready')}  ${c.info(PROJECT_NAME)}`);
     console.log();
     console.log(line());
     console.log();
 
     const steps = getNextSteps(variant, PROJECT_NAME);
-    console.log(`  ${c.muted('next steps')}`);
+    console.log(`  ${c.soft('Next steps')}`);
     console.log();
     steps.forEach(({ cmd, label }, i) => {
-      const col = rainbow[i % rainbow.length];
-      console.log(`  ${c.dim(`${i + 1}.`)}  ${col(cmd)}  ${c.muted(label)}`);
+      const col = stepColors[i % stepColors.length];
+      console.log(`  ${c.dim(`${i + 1}.`)}  ${col(cmd.padEnd(16))} ${c.muted(label)}`);
     });
 
     console.log();
@@ -146,14 +146,14 @@ const main = async () => {
     console.log();
     console.log(
       `  ` +
-      c.yellow('z') + c.orange('e') + c.green('n') +
-      `  ` + c.muted('happy building.')
+      c.brand('create') + c.fg('-') + c.accent('zen') +
+      `  ` + c.muted('ready when you are.')
     );
     console.log();
 
   } catch (err) {
     console.log();
-    console.log(`  ${c.red('✗')}  ${err.message}`);
+    console.log(`  ${c.danger('✗')}  ${err.message}`);
     console.log();
     process.exit(1);
   }
