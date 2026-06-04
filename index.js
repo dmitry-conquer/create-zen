@@ -66,13 +66,8 @@ const getStarterVariant = async () => {
         value: 'express'
       },
       {
-        title: `${c.purple('ai')}        ${c.muted('tailwind + alpine + claude')}`,
-        description: 'ai-powered site builder',
-        value: 'ai'
-      },
-      {
         title: `${c.muted('standard')}  ${c.muted('bem + scss + typescript')}`,
-        description: 'classic setup · not actively maintained',
+        description: 'classic setup',
         value: 'standard'
       }
     ],
@@ -88,7 +83,6 @@ const getStarterVariant = async () => {
 const getRepositoryUrl = (variant) => {
   const repos = {
     express:  'https://github.com/dmitry-conquer/zen-express.git',
-    ai:       'https://github.com/dmitry-conquer/zen-ai.git',
     standard: 'https://github.com/dmitry-conquer/zen-starter.git',
   };
   return repos[variant];
@@ -100,12 +94,7 @@ const getNextSteps = (variant, name) => {
     { cmd: 'npm install',   label: 'install deps'  },
   ];
 
-  if (variant === 'ai') {
-    steps.push({ cmd: 'claude',      label: 'open claude code' });
-    steps.push({ cmd: 'npm run dev', label: 'start dev server' });
-  } else {
-    steps.push({ cmd: 'npm run dev', label: 'start dev server' });
-  }
+  steps.push({ cmd: 'npm run dev', label: 'start dev server' });
 
   return steps;
 };
@@ -151,19 +140,6 @@ const main = async () => {
       const col = rainbow[i % rainbow.length];
       console.log(`  ${c.dim(`${i + 1}.`)}  ${col(cmd)}  ${c.muted(label)}`);
     });
-
-    if (variant === 'ai') {
-      console.log();
-      console.log(`  ${c.muted('─'.repeat(42))}`);
-      console.log(`  ${c.purple('tip')}  ${c.muted('run claude and let the ai build your site')}`);
-      console.log(`       ${c.muted('automatically from your description.')}`);
-    }
-
-    if (variant === 'standard') {
-      console.log();
-      console.log(`  ${c.muted('note')}  ${c.muted('standard is not actively maintained.')}`);
-      console.log(`         ${c.muted('consider using express for new projects.')}`);
-    }
 
     console.log();
     console.log(line());
