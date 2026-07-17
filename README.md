@@ -54,8 +54,9 @@ npm create zen@latest -- --yes
 The tool will interactively prompt you to:
 1. **Enter your project name** (with a default fallback)
 2. **Choose a starter variant**:
-   - **Standard**: BEM + SCSS + TypeScript (`zen-starter`)
    - **Express**: Tailwind CSS + Alpine.js (`zen-express`)
+   - **Standard**: BEM + SCSS + TypeScript (`zen-starter`)
+   - **WordPress**: PHP + Tailwind CSS + Alpine.js + TypeScript (`zen-wordpress`)
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="line" />
 

@@ -62,13 +62,18 @@ const getStarterVariant = async () => {
     choices: [
       {
         title: `${c.info('Express')}    ${c.muted('Tailwind + Alpine')}`,
-        description: 'fast server-rendered setup for small and focused projects',
+        description: 'frontend-only layout starter for fast utility-first development',
         value: 'express'
       },
       {
         title: `${c.accent('Standard')}   ${c.muted('BEM + SCSS + TypeScript')}`,
-        description: 'structured frontend starter with classic component styling',
+        description: 'frontend-only layout starter with structured component styling',
         value: 'standard'
+      },
+      {
+        title: `${c.success('WordPress')}  ${c.muted('PHP + Tailwind + Alpine + TypeScript')}`,
+        description: 'WordPress theme starter with PHP templates and production packaging',
+        value: 'wordpress'
       }
     ],
     initial: 0,
@@ -82,8 +87,9 @@ const getStarterVariant = async () => {
 
 const getRepositoryUrl = (variant) => {
   const repos = {
-    express:  'https://github.com/dmitry-conquer/zen-express.git',
+    express: 'https://github.com/dmitry-conquer/zen-express.git',
     standard: 'https://github.com/dmitry-conquer/zen-starter.git',
+    wordpress: 'https://github.com/dmitry-conquer/zen-wordpress.git',
   };
   return repos[variant];
 };
