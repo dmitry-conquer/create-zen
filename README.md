@@ -1,22 +1,37 @@
+<div align="center">
+
 # create-zen
 
-A simple CLI for starting a new project from one of three Zen templates.
+**Start a new project with one command.**
 
-## Usage
+[![npm version](https://img.shields.io/npm/v/create-zen?color=cb3837&logo=npm)](https://www.npmjs.com/package/create-zen)
+[![GitHub](https://img.shields.io/badge/GitHub-create--zen-181717?logo=github)](https://github.com/dmitry-conquer/create-zen)
+
+</div>
+
+A small CLI that lets you choose and clone one of three ready-to-use Zen starters.
+
+## Quick start
 
 ```bash
 npm create zen@latest
 ```
 
-Enter a project name and choose a starter:
+Or with pnpm:
+
+```bash
+pnpm create zen@latest
+```
+
+Enter your project name and choose a starter:
 
 | Starter | Stack |
 | --- | --- |
-| **Express** | Tailwind CSS + Alpine.js |
-| **Standard** | BEM + SCSS + TypeScript |
-| **WordPress** | PHP + Tailwind CSS + Alpine.js + TypeScript |
+| [**Express**](https://github.com/dmitry-conquer/zen-express) | Tailwind CSS + Alpine.js |
+| [**Standard**](https://github.com/dmitry-conquer/zen-starter) | BEM + SCSS + TypeScript |
+| [**WordPress**](https://github.com/dmitry-conquer/zen-wordpress) | PHP + Tailwind CSS + Alpine.js + TypeScript |
 
-The selected template will be cloned into a new directory without its Git history.
+The CLI clones the selected template into a new directory and removes its Git history, so you can start with a clean repository.
 
 ## Next steps
 
@@ -25,3 +40,8 @@ cd my-project
 npm install
 npm run dev
 ```
+
+## Links
+
+- [GitHub repository](https://github.com/dmitry-conquer/create-zen)
+- [npm package](https://www.npmjs.com/package/create-zen)
