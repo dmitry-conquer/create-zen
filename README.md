@@ -4,9 +4,6 @@
 
 **Start a new project with one command.**
 
-[![npm version](https://img.shields.io/npm/v/create-zen?color=cb3837&logo=npm)](https://www.npmjs.com/package/create-zen)
-[![GitHub](https://img.shields.io/badge/GitHub-create--zen-181717?logo=github)](https://github.com/dmitry-conquer/create-zen)
-
 </div>
 
 A small CLI that lets you choose and clone one of three ready-to-use Zen starters.
