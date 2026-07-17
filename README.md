@@ -40,8 +40,3 @@ cd my-project
 npm install
 npm run dev
 ```
-
-## Links
-
-- [GitHub repository](https://github.com/dmitry-conquer/create-zen)
-- [npm package](https://www.npmjs.com/package/create-zen)
