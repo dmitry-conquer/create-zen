@@ -7,18 +7,17 @@ import prompts from 'prompts';
 import chalk from 'chalk';
 import ora from 'ora';
 
-// Modern terminal palette
+// Restrained terminal palette with a distinct accent for each starter.
 const c = {
-  brand:   (t) => chalk.hex('#38bdf8').bold(t),
-  accent:  (t) => chalk.hex('#a78bfa').bold(t),
-  success: (t) => chalk.hex('#34d399').bold(t),
-  warning: (t) => chalk.hex('#fbbf24').bold(t),
-  danger:  (t) => chalk.hex('#fb7185').bold(t),
-  info:    (t) => chalk.hex('#22d3ee').bold(t),
-  fg:      (t) => chalk.hex('#f8fafc')(t),
-  soft:    (t) => chalk.hex('#cbd5e1')(t),
-  muted:   (t) => chalk.hex('#94a3b8')(t),
-  dim:     (t) => chalk.hex('#475569')(t),
+  basis:     (t) => chalk.hex('#CC6699').bold(t),
+  express:   (t) => chalk.hex('#06B6D4').bold(t),
+  wordpress: (t) => chalk.hex('#0073AA').bold(t),
+  success:   (t) => chalk.hex('#22C55E').bold(t),
+  danger:    (t) => chalk.hex('#EF4444').bold(t),
+  fg:        (t) => chalk.hex('#E5E7EB')(t),
+  soft:      (t) => chalk.hex('#B8C0CC')(t),
+  muted:     (t) => chalk.hex('#7C8798')(t),
+  dim:       (t) => chalk.hex('#3F4753')(t),
 };
 
 const line = () => c.dim('  ' + '─'.repeat(48));
@@ -27,10 +26,7 @@ const displayHeader = () => {
   console.clear();
   console.log();
   console.log(
-    `  ` +
-    c.brand('create') + c.fg('-') + c.accent('zen') +
-    `  ` + c.muted('·') + `  ` +
-    c.soft('modern starter generator')
+    `  ${c.fg('modern starter generator')}`
   );
   console.log(line());
   console.log();
@@ -61,18 +57,18 @@ const getStarterVariant = async () => {
     message: c.soft('Choose a starter'),
     choices: [
       {
-        title: `${c.info('Express')}    ${c.muted('Tailwind + Alpine')}`,
-        description: 'frontend-only layout starter for fast utility-first development',
-        value: 'express'
-      },
-      {
-        title: `${c.accent('Standard')}   ${c.muted('BEM + SCSS + TypeScript')}`,
-        description: 'frontend-only layout starter with structured component styling',
+        title: `${c.basis('Basis')}      ${c.muted('SCSS and BEM · HTML and Handlebars · TypeScript')}`,
+        description: 'Foundational BEM-based markup for legacy and class-driven projects',
         value: 'standard'
       },
       {
-        title: `${c.success('WordPress')}  ${c.muted('PHP + Tailwind + Alpine + TypeScript')}`,
-        description: 'WordPress theme starter with PHP templates and production packaging',
+        title: `${c.express('Express')}    ${c.muted('Tailwind CSS v4 · HTML and Handlebars · TypeScript and Alpine.js')}`,
+        description: 'Fast utility-first frontend implementation',
+        value: 'express'
+      },
+      {
+        title: `${c.wordpress('WordPress')}  ${c.muted('Tailwind CSS v4 · PHP and WordPress templates · PHP, TypeScript, and Alpine.js')}`,
+        description: 'Direct frontend development inside a production-ready WordPress theme',
         value: 'wordpress'
       }
     ],
@@ -105,7 +101,11 @@ const getNextSteps = (variant, name) => {
   return steps;
 };
 
-const stepColors = [c.info, c.accent, c.success, c.warning];
+const getStarter = (variant) => ({
+  standard:  { name: 'Basis',     color: c.basis,     spinnerColor: 'magenta' },
+  express:   { name: 'Express',   color: c.express,   spinnerColor: 'cyan' },
+  wordpress: { name: 'WordPress', color: c.wordpress, spinnerColor: 'blue' },
+}[variant]);
 
 const main = async () => {
   try {
@@ -114,11 +114,12 @@ const main = async () => {
     const PROJECT_NAME = await getProjectName();
     const variant = await getStarterVariant();
     const REPO_URL = getRepositoryUrl(variant);
+    const starter = getStarter(variant);
 
     const spinner = ora({
-      text: `  ${c.muted('Creating project...')}`,
+      text: `  ${c.muted('Creating')} ${starter.color(starter.name)} ${c.muted('project...')}`,
       spinner: 'dots',
-      color: 'cyan'
+      color: starter.spinnerColor
     }).start();
 
     try {
@@ -134,7 +135,7 @@ const main = async () => {
 
     fs.rmSync(path.join(PROJECT_NAME, '.git'), { recursive: true, force: true });
 
-    console.log(`  ${c.success('✓')}  ${c.fg('Project ready')}  ${c.info(PROJECT_NAME)}`);
+    console.log(`  ${c.success('✓')}  ${c.fg('Project ready')}  ${starter.color(PROJECT_NAME)}`);
     console.log();
     console.log(line());
     console.log();
@@ -143,18 +144,13 @@ const main = async () => {
     console.log(`  ${c.soft('Next steps')}`);
     console.log();
     steps.forEach(({ cmd, label }, i) => {
-      const col = stepColors[i % stepColors.length];
-      console.log(`  ${c.dim(`${i + 1}.`)}  ${col(cmd.padEnd(16))} ${c.muted(label)}`);
+      console.log(`  ${c.dim(`${i + 1}.`)}  ${c.fg(cmd.padEnd(16))} ${c.muted(label)}`);
     });
 
     console.log();
     console.log(line());
     console.log();
-    console.log(
-      `  ` +
-      c.brand('create') + c.fg('-') + c.accent('zen') +
-      `  ` + c.muted('ready when you are.')
-    );
+    console.log(`  ${c.fg('Setup complete.')}  ${c.muted('Ready when you are.')}`);
     console.log();
 
   } catch (err) {

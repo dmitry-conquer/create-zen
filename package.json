@@ -1,6 +1,6 @@
 {
   "name": "create-zen",
-  "version": "1.8.9",
+  "version": "2.0.0",
   "type": "module",
   "description": "✨ Create a new web development project with modern setup powered by Vite 🚀",
   "bin": {
